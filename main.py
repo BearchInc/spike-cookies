@@ -11,11 +11,14 @@ class Github:
     def login(self, user, password):
         r = requests.get(loginURL)
         loginSetCookiesHeader = r.headers['Set-Cookie']
+        print "Set-Cookie: " + loginSetCookiesHeader
         doc = BeautifulSoup(r.text)
         token = doc.find('input', {'name': 'authenticity_token'}).attrs['value']
-        r = requests.post(sessionURL,
-                          headers={ 'Cookie': loginSetCookiesHeader },
-                          data={'utf8': '%E2%9C%93', 'authenticity_token': token, 'login':user, 'password': password})
+        print "Token: " + token
+        req = requests.Request('POST', sessionURL, headers={ 'Cookie': loginSetCookiesHeader }, data={'utf8': '%E2%9C%93', 'authenticity_token': token, 'login':user, 'password': password}).prepare()
+        s = requests.Session()
+        r = s.send(req)
+        print req.body
         return r.headers['Set-Cookie']
 
 app = Flask(__name__)
@@ -27,11 +30,11 @@ def login():
 
 @app.route("/login/github")
 def login_github():
-    cookies = Github().login('user', 'password')
+    cookies = Github().login('username', 'pass')
     return flask.jsonify(**{
         "system": "github",
         "set-cookie": cookies
     })
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     app.run()
