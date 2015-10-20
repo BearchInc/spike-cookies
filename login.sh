@@ -18,6 +18,7 @@ curl -XPOST https://github.com/session \
   --data-urlencode "utf8=✓" \
   --data-urlencode "authenticity_token=${TOKEN}" \
   --data-urlencode "login=${USER}" \
-  --data-urlencode "password=${PASS}" -i
+  --data-urlencode "password=${PASS}" -v
 
 curl -i https://github.com/BearchInc/unseen-core --cookie session.cookies > unseen-repo.html
+
