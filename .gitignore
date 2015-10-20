@@ -2,5 +2,6 @@
 
 .idea
 *.iml
+*.pyc
 *.cookies
 unseen-repo.html
