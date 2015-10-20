@@ -6,4 +6,3 @@
 # Note: The `lib` directory is added to `sys.path` by `appengine_config.py`.
 flask
 beautifulsoup4
-google-api-python-client
