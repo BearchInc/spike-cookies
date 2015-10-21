@@ -32,7 +32,7 @@ class Facebook:
     def login(self, user, password):
         data = urllib.urlencode({'email': user, 'pass': password})
         result = urlfetch.fetch(url=Facebook.loginURL, payload=data, follow_redirects=False, method=urlfetch.POST, headers={ 'cookie':'_ga=BakerySSO'})
-        print(result.headers)
+        return result.headers['set-cookie']
 
 
 app = Flask(__name__)
