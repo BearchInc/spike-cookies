@@ -17,8 +17,8 @@ window.bakery.create = function(provider) {
 			if (request.readyState == 4 && request.status == 200) {
 				var sessionInfo = JSON.parse(request.responseText);
 				for (key in sessionInfo.cookies) {
-					chrome.cookies.set({url: provider.home, name: key, value: sessionInfo[key]}, function() {
-						console.log('Received cookies for', provider.label)
+					chrome.cookies.set({url: provider.home,  domain: provider.domain, name: key, value: sessionInfo.cookies[key]}, function() {
+						console.log('cookies set, result:', this)
 					});
 				}
 
@@ -38,16 +38,19 @@ window.bakery.create = function(provider) {
 		github: {
 			label: "GitHub",
 			home: "https://github.com",
+			domain: ".github.com",
 			session: "https://bakery-dot-staging-api-getunseen.appspot.com/login/github"
 		},
 		facebook: {
 			label: "Facebook",
 			home: "https://facebook.com",
+			domain: ".facebook.com",
 			session: "https://bakery-dot-staging-api-getunseen.appspot.com/login/facebook"
 		},
 		twitter: {
 			label: "Twitter",
 			home: "https://twitter.com",
+			domain: ".twitter.com",
 			session: "https://bakery-dot-staging-api-getunseen.appspot.com/login/twitter"
 		}
 	}
