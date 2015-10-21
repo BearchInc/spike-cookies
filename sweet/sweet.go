@@ -8,27 +8,27 @@ import (
 )
 
 type Request struct {
-	client   *SweetClient
+	client   *Client
 	req      *http.Request
 	endpoint string
 	payload  string
 }
 
-type SweetClient struct {
+type Client struct {
 	*http.Client
 }
 
-func NewWithClient(client *http.Client) *SweetClient {
-	return &SweetClient{client}
+func NewWithClient(client *http.Client) *Client {
+	return &Client{client}
 }
 
-func (client *SweetClient) EnableCookieJar() *SweetClient {
+func (client *Client) EnableCookieJar() *Client {
 	jar, _ := cookiejar.New(nil)
 	client.Client.Jar = jar
 	return client
 }
 
-func (client *SweetClient) PostForm(endpoint string, payload url.Values) *Request {
+func (client *Client) PostForm(endpoint string, payload url.Values) *Request {
 	body := payload.Encode()
 	req, err := http.NewRequest("POST", endpoint, strings.NewReader(body))
 	if err != nil {

@@ -1,42 +1,30 @@
 package web
 
 import (
-	"github.com/PuerkitoBio/goquery"
-	"github.com/drborges/demo-app/sweet"
+	"github.com/drborges/demo-app/bakery/providers"
 	"github.com/julienschmidt/httprouter"
-	"net/http"
-	"net/url"
 	"google.golang.org/appengine"
 	"google.golang.org/appengine/urlfetch"
-)
-
-var (
-	LoginURL   = "https://github.com/login"
-	SessionURL = "https://github.com/session"
+	"gopkg.in/unrolled/render.v1"
+	"net/http"
 )
 
 func init() {
+	type JSON map[string]interface{}
 	router := httprouter.New()
+	send := render.New()
 
 	router.POST("/login", func(w http.ResponseWriter, req *http.Request, params httprouter.Params) {
 		cxt := appengine.NewContext(req)
-		urlfetchClient := urlfetch.Client(cxt)
-		client := sweet.NewWithClient(urlfetchClient).EnableCookieJar()
-		resp, _ := client.Get(LoginURL)
+		client := urlfetch.Client(cxt)
 
-		doc, _ := goquery.NewDocumentFromReader(resp.Body)
-		sel := doc.Find("input[name=authenticity_token]")
-		token, _ := sel.Attr("value")
-
-		form := url.Values{}
-		form.Add("login", "user")
-		form.Add("password", "secret")
-		form.Add("authenticity_token", token)
-
-		resp, _ = client.PostForm(SessionURL, form).Do()
-		for _, cookie := range resp.Cookies() {
-			w.Header().Add("Cookie", cookie.String())
+		session, err := providers.NewGithubProvider(client).Login()
+		if err != nil {
+			send.JSON(w, http.StatusBadRequest, JSON{"message": err})
+			return
 		}
+
+		send.JSON(w, http.StatusOK, session)
 	})
 
 	http.Handle("/", router)
