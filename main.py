@@ -23,7 +23,7 @@ class Github:
                 payload=data,
                 method=urlfetch.POST,
                 follow_redirects=False,
-                headers={ 'Cookie': loginSetCookiesHeader, 'User-Agent':'curl/7.43.0' })
+                headers={ 'Cookie': loginSetCookiesHeader })
 
         return result.headers['set-cookie']
 
