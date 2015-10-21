@@ -94,7 +94,7 @@ def login_github():
 
 @app.route("/login/twitter")
 def login_twitter():
-    cookies = Twitter().login('not_lisardo', '1lisa3do')
+    cookies = Twitter().login('testunseen', 'bearch12')
     return flask.jsonify(**{
         "system": "twitter",
         "cookies": cookies
