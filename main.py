@@ -3,6 +3,16 @@ import flask
 from google.appengine.api import urlfetch
 from flask import Flask
 from bs4 import BeautifulSoup
+import Cookie
+
+def readCookies(str):
+    c = Cookie.SimpleCookie()
+    c.load(str)
+    data = {}
+    for key in c:
+        data[key] = c[key].value
+    return data
+
 
 class Github:
     loginURL = 'https://github.com/login'
@@ -23,16 +33,16 @@ class Github:
                 follow_redirects=False,
                 headers={ 'Cookie': loginSetCookiesHeader })
 
-        return result.headers['set-cookie']
-
+        return readCookies(result.headers['Set-Cookie'])
 
 
 class Facebook:
     loginURL = 'https://www.facebook.com/login.php?login_attempt=1&lwv=110'
     def login(self, user, password):
+        cookie = Cookie.SimpleCookie()
         data = urllib.urlencode({'email': user, 'pass': password})
         result = urlfetch.fetch(url=Facebook.loginURL, payload=data, follow_redirects=False, method=urlfetch.POST, headers={ 'cookie':'_ga=BakerySSO'})
-        return result.headers['set-cookie']
+        return readCookies(result.headers['Set-Cookie'])
 
 
 app = Flask(__name__)
@@ -47,7 +57,7 @@ def login_facebook():
     cookies = Facebook().login('100010385929288@facebook.com', 'Unseen2015')
     return flask.jsonify(**{
         "system": "facebook",
-        "set-cookie": cookies
+        "cookies": cookies
     })
 
 @app.route("/login/github")
@@ -55,7 +65,7 @@ def login_github():
     cookies = Github().login('joaobearch', 'Unseen2015')
     return flask.jsonify(**{
         "system": "github",
-        "set-cookie": cookies
+        "cookies": cookies
     })
 
 if __name__ == "__main__":
