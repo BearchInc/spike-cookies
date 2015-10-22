@@ -1,0 +1,17 @@
+{
+  "name": "Bakery",
+  "description": "Bakery login protocol.",
+  "version": "0.1",
+  "manifest_version": 2,
+  "browser_action": {
+    "default_icon": "img/cookies-icon.png",
+    "default_popup": "popup.html"
+  },
+  "permissions": [
+    "activeTab",
+    "tabs",
+    "cookies",
+    "*://*/*"
+  ],
+  "icons": { "16": "img/cookies-icon.png", "128": "img/cookies-icon.png" }
+}
