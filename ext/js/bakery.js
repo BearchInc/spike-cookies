@@ -13,9 +13,10 @@ window.bakery.create = function(provider) {
 
 	button.onclick = function() {
 		var request = new XMLHttpRequest();
+		console.log('Will request authorization');
 		request.onreadystatechange = function() {
 			if (request.readyState == 4 && request.status == 200) {
-				console.log('hey, request went through');
+				console.log('Request succeed');
 			}
 		}
 

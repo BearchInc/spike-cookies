@@ -38,3 +38,33 @@ function sendRegistrationId(callback) {
 	// Send the registration token to your application server in a secure way.
 	callback(true)
 }
+
+chrome.gcm.onMessage.addListener(function(message) {
+	console.log("Notification received.");
+	console.log(message);
+
+	var sessionInfo = message["data"]["cookies"];	
+	var providerHome = message["data"]["provider_home"];
+	var providerDomain = message["data"]["provider_domain"];
+
+	console.log(sessionInfo);
+
+	var ygor = JSON.parse(sessionInfo);
+	for (key in ygor) {
+		console.log(key + " - " + ygor[key])
+		chrome.cookies.set({
+			url: providerHome,
+			domain: providerDomain,
+			name: key,
+			value: ygor[key]
+		}, function() {
+			console.log('cookies set, result:', this)
+		});
+	}
+
+	chrome.tabs.create({
+		url: providerHome
+	}, function() {
+		console.log("redirecting to", providerHome)
+	});
+});
