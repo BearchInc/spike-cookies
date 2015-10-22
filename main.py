@@ -1,6 +1,7 @@
 import flask
 import json
 import providers
+import notifications
 from google.appengine.api import urlfetch
 from flask import Flask
 from flask.ext.api import FlaskAPI
@@ -49,35 +50,21 @@ def login_twitter():
 @app.route("/permission/github/approve")
 def approve():
     cookies = providers.Twitter().login('testunseen', 'bearch12')
-    data = json.dumps({'to':'APA91bEGknJYkXmuJHIxnLQyFmEjxIC2Sddg6WFo8xj0QsVXXPjwde0wgXs2kRsTbCuA7BjorF-V_BCOFWtRBMkA6xF7NXNCnIj1uwY5ZnkKA15M_jbxhHUt1qqVo1Vp3_udfXRiuMvWhiOzMq2R84ZYPNs3vR3c9w', 
-                            'content_available': True,
-                            'notification':{'title':'Permission',
-                                            'body':'I need permission to see nudes',
-                                            'cookies': cookies
-                                            }})
-    response = urlfetch.fetch(url='https://gcm-http.googleapis.com/gcm/send',
-                method=urlfetch.POST, 
-                payload=data,
-                headers={'Authorization':'key=AIzaSyD4jrcwQEsQrbHdhbkn22NWPH2tAByr-Jo'})
-    print reponse.status_code
-    return reponse.status_code
+    notification = {'title':'Permission', 'body':'I need permission to see nudes','cookies': cookies }
+    reponse = notifications.send(notification)
+    return {}, reponse.status_code
 
 
 @app.route("/permission", methods=['POST'])
 @set_renderers(JSONRenderer)
 def ask_permission():
-    data = json.dumps({'to':'mrpxT7P0Fzw:APA91bEgY9zCd5O8BcIv6DF58mgUivSCy9CPjaY75Oq6bcQfpeySVL9_mw9MA0srV48f_w6t-ODvBguPrsDnIEUQPgwg6Ra3MRYUK1RWAZEAFVnkgQEODV2RrDI-jAk5_guRZBF1F2gV', 
-                            'content_available': True,
-                            'notification':{'title':'Permission',
-                                            'approve_url':'https://bakery-dot-staging-api-getunseen.appspot.com/permission/approve',
-                                            'reject_url':'https://bakery-dot-staging-api-getunseen.appspot.com/permission/reject',
-                                            'body':'I need permission to see nudes',
-                                            'click_action':'LOGIN_REQUEST'}})
+    notification = {'title':'Permission',
+            'body':'TIBIA NOW HAS SOUNDS',
+            'click_action':'LOGIN_REQUEST'}
+    data = { 'approve_url':'https://bakery-dot-staging-api-getunseen.appspot.com/permission/approve',
+              'reject_url':'https://bakery-dot-staging-api-getunseen.appspot.com/permission/reject' }
 
-    response = urlfetch.fetch(url='https://gcm-http.googleapis.com/gcm/send',
-                method=urlfetch.POST, 
-                payload=data,
-                headers={'Authorization':'key=AIzaSyD4jrcwQEsQrbHdhbkn22NWPH2tAByr-Jo'})
+    response = notifications.send(notification, data)
     return {}, response.status_code
     
 
