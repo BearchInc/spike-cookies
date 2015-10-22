@@ -16,55 +16,42 @@ app.config['DEFAULT_RENDERERS'] = [
     'flask.ext.api.renderers.BrowsableAPIRenderer',
 ]
 
-@app.route("/login")
-def login():
+@app.route("/hello")
+def hello():
     return "Hello World"
 
-@app.route("/login/facebook")
+@app.route("/login/:app_id")
 @set_renderers(JSONRenderer)
-def login_facebook():
-    cookies = providers.Facebook().login('100010385929288@facebook.com', 'Unseen2015')
+def login(app_id):
+    return ask_permission(app_id)
+
+apps = {
+    'github': providers.Github('joaobearch', 'Unseen2015'),
+    'facebook': providers.Facebook('100010385929288@facebook.com', 'Unseen2015'),
+    'twitter': providers.Twitter('testuseen', 'bearch12'),
+}
+
+@app.route("/permission/approve/<app_id>")
+@set_renderers(JSONRenderer)
+def approve(app_id):
+    cookies = apps[app_id].login()
+    data = { 'cookies': cookies }
+    notification = {'title':'Permission', 'body':'I need permission to see nudes'}
+    response = notifications.send(notification, notifications.browser, data)
+    print response.__dict__
     return {
-        "system": "facebook",
+        "response":response.status_code,
+        "system": app_id,
         "cookies": cookies
     }
 
-@app.route("/login/github")
-@set_renderers(JSONRenderer)
-def login_github():
-    cookies = providers.Github().login('joaobearch', 'Unseen2015')
-    return {
-        "system": "github",
-        "cookies": cookies
-    }
-
-@app.route("/login/twitter")
-@set_renderers(JSONRenderer)
-def login_twitter():
-    cookies = providers.Twitter().login('testunseen', 'bearch12')
-    return {
-        "system": "twitter",
-        "cookies": cookies
-    }
-
-@app.route("/permission/github/approve")
-def approve():
-    cookies = providers.Twitter().login('testunseen', 'bearch12')
-    notification = {'title':'Permission', 'body':'I need permission to see nudes','cookies': cookies }
-    reponse = notifications.send(notification)
-    return {}, reponse.status_code
-
-
-@app.route("/permission", methods=['POST'])
-@set_renderers(JSONRenderer)
-def ask_permission():
+def ask_permission(app_id):
     notification = {'title':'Permission',
             'body':'TIBIA NOW HAS SOUNDS',
             'click_action':'LOGIN_REQUEST'}
-    data = { 'approve_url':'https://bakery-dot-staging-api-getunseen.appspot.com/permission/approve',
-              'reject_url':'https://bakery-dot-staging-api-getunseen.appspot.com/permission/reject' }
-
-    response = notifications.send(notification, data)
+    data = { 'approve_url':'https://bakery-dot-staging-api-getunseen.appspot.com/permission/approve/' + app_id,
+             'reject_url':'https://bakery-dot-staging-api-getunseen.appspot.com/permission/reject/' + app_id }
+    response = notifications.send(notification, notifications.smartphone, data)
     return {}, response.status_code
     
 
