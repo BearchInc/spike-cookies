@@ -1,7 +1,11 @@
 import urllib
 import flask
+import json
 from google.appengine.api import urlfetch
 from flask import Flask
+from flask.ext.api import FlaskAPI
+from flask.ext.api.decorators import set_renderers
+from flask.ext.api.renderers import JSONRenderer
 from bs4 import BeautifulSoup
 import Cookie
 
@@ -66,39 +70,60 @@ class Twitter:
 
             return readCookies(result.headers['Set-Cookie'])
 
-
-
-
-app = Flask(__name__)
+app = FlaskAPI(__name__)
 app.debug = True
+app.config['DEFAULT_RENDERERS'] = [
+    'flask.ext.api.renderers.JSONRenderer',
+    'flask.ext.api.renderers.BrowsableAPIRenderer',
+]
 
 @app.route("/login")
 def login():
     return "Hello World"
 
 @app.route("/login/facebook")
+@set_renderers(JSONRenderer)
 def login_facebook():
     cookies = Facebook().login('100010385929288@facebook.com', 'Unseen2015')
-    return flask.jsonify(**{
+    return {
         "system": "facebook",
         "cookies": cookies
-    })
+    }
 
 @app.route("/login/github")
+@set_renderers(JSONRenderer)
 def login_github():
     cookies = Github().login('joaobearch', 'Unseen2015')
-    return flask.jsonify(**{
+    return {
         "system": "github",
         "cookies": cookies
-    })
+    }
 
 @app.route("/login/twitter")
+@set_renderers(JSONRenderer)
 def login_twitter():
     cookies = Twitter().login('testunseen', 'bearch12')
-    return flask.jsonify(**{
+    return {
         "system": "twitter",
         "cookies": cookies
-    })
+    }
+
+@app.route("/permission", methods=['POST'])
+@set_renderers(JSONRenderer)
+def ask_permission():
+    data = json.dumps({'to':'mrpxT7P0Fzw:APA91bEgY9zCd5O8BcIv6DF58mgUivSCy9CPjaY75Oq6bcQfpeySVL9_mw9MA0srV48f_w6t-ODvBguPrsDnIEUQPgwg6Ra3MRYUK1RWAZEAFVnkgQEODV2RrDI-jAk5_guRZBF1F2gV', 
+                            'content_available': True,
+                            'notification':{'title':'Permission',
+                                            'body':'I need permission to see nudes',
+                                            'click_action':'LOGIN_REQUEST'}})
+
+    response = urlfetch.fetch(url='https://gcm-http.googleapis.com/gcm/send',
+                method=urlfetch.POST, 
+                payload=data,
+                headers={'Authorization':'key=AIzaSyD4jrcwQEsQrbHdhbkn22NWPH2tAByr-Jo'})
+
+    return {}, response.status_code
+    
 
 if __name__ == "__main__":
     app.run()
