@@ -15,16 +15,7 @@ window.bakery.create = function(provider) {
 		var request = new XMLHttpRequest();
 		request.onreadystatechange = function() {
 			if (request.readyState == 4 && request.status == 200) {
-				var sessionInfo = JSON.parse(request.responseText);
-				for (key in sessionInfo.cookies) {
-					chrome.cookies.set({url: provider.home,  domain: provider.domain, name: key, value: sessionInfo.cookies[key]}, function() {
-						console.log('cookies set, result:', this)
-					});
-				}
-
-				chrome.tabs.create({url: provider.home}, function () {
-					console.log("redirecting to", provider.home)
-				});
+				console.log('hey, request went through');
 			}
 		}
 
