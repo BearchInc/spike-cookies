@@ -7,11 +7,21 @@
     "default_icon": "img/cookies-icon.png",
     "default_popup": "popup.html"
   },
+  "background": {
+    "scripts": [
+      "js/push_notification.js"
+    ]
+  },
   "permissions": [
     "activeTab",
     "tabs",
     "cookies",
-    "*://*/*"
+    "*://*/*",
+    "gcm",
+    "storage"
   ],
-  "icons": { "16": "img/cookies-icon.png", "128": "img/cookies-icon.png" }
+  "icons": {
+    "16": "img/cookies-icon.png",
+    "128": "img/cookies-icon.png"
+  }
 }
