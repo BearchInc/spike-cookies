@@ -27,18 +27,19 @@ def login(app_id):
 
 apps = {
     'github': providers.Github('joaobearch', 'Unseen2015'),
-    'facebook': providers.Facebook('100010385929288@facebook.com', 'Unseen2015'),
+    'facebook': providers.Facebook('lisardo.kist@getunseen.com', 'Unseen2015'),
     'twitter': providers.Twitter('testuseen', 'bearch12'),
 }
 
 @app.route("/permission/approve/<app_id>")
 @set_renderers(JSONRenderer)
 def approve(app_id):
-    cookies = apps[app_id].login()
-    data = { 'cookies': cookies, 'provider_home': apps[app_id].home, 'provider_domain': apps[app_id].domain }
+    cookies, home = apps[app_id].login()
+    print home
+    data = { 'cookies': cookies, 'provider_home': home, 'provider_domain': apps[app_id].domain }
     notification = {'title':'Permission', 'body':'I need permission to see nudes'}
     response = notifications.send(notification, notifications.browser, data)
-    print response.__dict__
+
     return {
         "response":response.status_code,
         "system": app_id,

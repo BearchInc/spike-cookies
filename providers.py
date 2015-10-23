@@ -27,10 +27,9 @@ class Github:
                 follow_redirects=False,
                 headers={ 'Cookie': loginSetCookiesHeader })
 
-        return readCookies(result.headers['Set-Cookie'])
+        return readCookies(result.headers['Set-Cookie']), self.home
 
 class Facebook:
-    home = 'https://www.facebook.com'
     domain = '.facebook.com'
     loginURL = 'https://www.facebook.com/login.php?login_attempt=1&lwv=110'
     
@@ -45,7 +44,8 @@ class Facebook:
                 method=urlfetch.POST, 
                 follow_redirects=False, 
                 headers={ 'cookie':'_ga=BakerySSO'})
-        return readCookies(result.headers['Set-Cookie'])
+
+        return readCookies(result.headers['Set-Cookie']), result.headers['location']
 
 
 class Twitter:
@@ -71,7 +71,7 @@ class Twitter:
                     follow_redirects=False, 
                     headers={ 'Cookie': loginSetCookiesHeader})
 
-            return readCookies(result.headers['Set-Cookie'])
+            return readCookies(result.headers['Set-Cookie']), self.home
 
 
 def readCookies(str):
