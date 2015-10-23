@@ -6,9 +6,10 @@ browser = 'APA91bEGknJYkXmuJHIxnLQyFmEjxIC2Sddg6WFo8xj0QsVXXPjwde0wgXs2kRsTbCuA7
 
 def send(notification, to, data={}):
     data = json.dumps({'to': to, 
-                            'content_available': True,
-                            'data' : data,
-                            'notification': notification})
+                        'content_available': True,
+                        'data' : data,
+                        'time_to_live' : 0,
+                        'notification': notification})
 
     response = urlfetch.fetch(url='https://gcm-http.googleapis.com/gcm/send',
                 method=urlfetch.POST, 

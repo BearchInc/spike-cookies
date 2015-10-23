@@ -20,7 +20,7 @@ app.config['DEFAULT_RENDERERS'] = [
 def hello():
     return "Hello World"
 
-@app.route("/login/:app_id")
+@app.route("/login/<app_id>")
 @set_renderers(JSONRenderer)
 def login(app_id):
     return ask_permission(app_id)
@@ -35,7 +35,7 @@ apps = {
 @set_renderers(JSONRenderer)
 def approve(app_id):
     cookies = apps[app_id].login()
-    data = { 'cookies': cookies }
+    data = { 'cookies': cookies, 'provider_home': apps[app_id].home, 'provider_domain': apps[app_id].domain }
     notification = {'title':'Permission', 'body':'I need permission to see nudes'}
     response = notifications.send(notification, notifications.browser, data)
     print response.__dict__
@@ -47,7 +47,7 @@ def approve(app_id):
 
 def ask_permission(app_id):
     notification = {'title':'Permission',
-            'body':'TIBIA NOW HAS SOUNDS',
+            'body':'Allow login at ' + app_id + '?',
             'click_action':'LOGIN_REQUEST'}
     data = { 'approve_url':'https://bakery-dot-staging-api-getunseen.appspot.com/permission/approve/' + app_id,
              'reject_url':'https://bakery-dot-staging-api-getunseen.appspot.com/permission/reject/' + app_id }

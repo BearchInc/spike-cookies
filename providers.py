@@ -4,6 +4,8 @@ import Cookie
 from google.appengine.api import urlfetch
 
 class Github:
+    home = 'https://github.com'
+    domain = '.github.com'
     loginURL = 'https://github.com/login'
     sessionURL = 'https://github.com/session'
     
@@ -28,6 +30,8 @@ class Github:
         return readCookies(result.headers['Set-Cookie'])
 
 class Facebook:
+    home = 'https://www.facebook.com'
+    domain = '.facebook.com'
     loginURL = 'https://www.facebook.com/login.php?login_attempt=1&lwv=110'
     
     def __init__(self, user, password):
@@ -45,6 +49,8 @@ class Facebook:
 
 
 class Twitter:
+    home = 'https://twitter.com'
+    domain = '.twitter.com'
     loginURL = 'https://twitter.com'
     sessionURL = 'https://twitter.com/sessions'
 
