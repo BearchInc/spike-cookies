@@ -11,36 +11,26 @@ def send(notification, to, data={}):
                         'time_to_live' : 0,
                         'notification': notification})
 
+    headers = {'Authorization':'key=AIzaSyD4jrcwQEsQrbHdhbkn22NWPH2tAByr-Jo', 'Content-Type':'application/json'}
+
     response = urlfetch.fetch(url='https://gcm-http.googleapis.com/gcm/send',
-                method=urlfetch.POST, 
-                payload=data,
-                headers={'Authorization':'key=AIzaSyD4jrcwQEsQrbHdhbkn22NWPH2tAByr-Jo', 'Content-Type':'application/json'})
+                method=urlfetch.POST, payload=data, headers=headers)
+
     return response
     
-def sendParseNotification(data={}):
-  #   curl -X POST \
-  # -H "X-Parse-Application-Id: wWnWoHxacJQauLNHHRkRdK8SW9mthV1TMCZEAyNQ" \
-  # -H "X-Parse-REST-API-Key: Kax6B4WgzQxwIdXMb6NVGMq0irVvOW7t3XiOf24M" \
-  # -H "Content-Type: application/json" \
-  # -d '{ "where": { "deviceType": "ios" }, "data": { "aps": { "alert": "Noossa, tem curl", "category": "LOGIN_REQUEST" } } }' \
-  # https://api.parse.com/1/push
-
-    print 'Lets get started'
-    
+def sendParseNotification(app_id=''):
 
     data = json.dumps({ 
-        'where': { 
-            'deviceType': 'ios' 
-        }, 
-        'data': { 
-            'aps': { 
-                'alert': 'PARSE', 
-                'category': 'LOGIN_REQUEST' 
-            },
-            'data': data } 
+        'where': { 'deviceType': 'ios' }, 
+        'data': { 'aps': { 
+                'alert': { 'body': 'Allow login at ' + app_id + '?', 'title': 'Notification Title' },
+                'category': 'LOGIN_REQUEST',
+                'login_url':'https://bakery-dot-staging-api-getunseen.appspot.com/permission/approve/' + app_id,
+                'reject_url':'https://bakery-dot-staging-api-getunseen.appspot.com/permission/reject/' + app_id,
+                'content-available': 1 
+                }
+        }
     })
-
-    print data
 
     headers = {
         'X-Parse-Application-Id': 'wWnWoHxacJQauLNHHRkRdK8SW9mthV1TMCZEAyNQ', 
@@ -48,11 +38,6 @@ def sendParseNotification(data={}):
         'Content-Type': 'application/json'
     }
 
-    print headers
-
-    response = urlfetch.fetch(url='https://api.parse.com/1/push',
-        method=urlfetch.POST,
-        payload=data,
-        headers=headers)
+    response = urlfetch.fetch(url='https://api.parse.com/1/push', method=urlfetch.POST, payload=data, headers=headers)
 
     return response

@@ -47,16 +47,7 @@ def approve(app_id):
     }
 
 def ask_permission(app_id):
-    notification = {'title':'Permission',
-            'body':'Allow login at ' + app_id + '?',
-            'click_action':'LOGIN_REQUEST'}
-    data = { 'approve_url':'https://bakery-dot-staging-api-getunseen.appspot.com/permission/approve/' + app_id,
-             'reject_url':'https://bakery-dot-staging-api-getunseen.appspot.com/permission/reject/' + app_id }
-    
-
-    # response = notifications.send(notification, notifications.smartphone, data)
-    response = notifications.sendParseNotification(data)
-
+    response = notifications.sendParseNotification(app_id)
     return {}, response.status_code
     
 
