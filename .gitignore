@@ -5,3 +5,5 @@
 *.pyc
 *.cookies
 unseen-repo.html
+
+lib/

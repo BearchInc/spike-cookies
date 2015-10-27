@@ -29,7 +29,8 @@ function registerCallback(registrationId) {
 		// next time when the app starts up.
 		if (succeed)
 			chrome.storage.local.set({
-				registered: true
+				registered: true,
+				gcm: registrationId
 			});
 	});
 }
