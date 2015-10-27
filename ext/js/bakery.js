@@ -29,15 +29,15 @@ window.bakery.create = function(provider) {
 	var providers = {
 		github: {
 			label: "GitHub",
-			session: "http://localhost:8080/login/github"
+			session: "https://bakery-dot-staging-api-getunseen.appspot.com/login/github"
 		},
 		facebook: {
 			label: "Facebook",
-			session: "http://localhost:8080/login/facebook"
+			session: "https://bakery-dot-staging-api-getunseen.appspot.com/login/facebook"
 		},
 		twitter: {
 			label: "Twitter",
-			session: "http://localhost:8080/login/twitter"
+			session: "https://bakery-dot-staging-api-getunseen.appspot.com/login/twitter"
 		}
 	}
 
