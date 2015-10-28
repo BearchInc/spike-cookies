@@ -7,6 +7,10 @@ from flask import Flask
 from flask.ext.api import FlaskAPI
 from flask.ext.api.decorators import set_renderers
 from flask.ext.api.renderers import JSONRenderer
+from google.appengine.api.channel import channel
+from google.appengine.ext import deferred
+from random import randint
+
 
 
 app = FlaskAPI(__name__)
@@ -48,6 +52,17 @@ def approve(app_id,):
         "system": app_id,
         "cookies": cookies
     }
+
+@app.route("/munjal")
+def munjal():
+    channelId = "ygorIsAwesome"
+    token = channel.create_channel(channelId)
+
+    return token
+
+@app.route("/message/<channel_token>")
+def channel_test(channel_token):
+    channel.send_message(channel_token, "Some message")
 
 def ask_permission(app_id):
     response = notifications.sendParseNotification(app_id)

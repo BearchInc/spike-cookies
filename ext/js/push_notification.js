@@ -85,3 +85,61 @@ chrome.gcm.onMessage.addListener(function(message) {
 		});
 	}
 });
+
+// goog.appengine.DevSocket.BASE_URL = "http://localhost:8080/_ah/channel/";
+
+
+var request = new XMLHttpRequest();
+console.log('Will request authorization');
+request.onreadystatechange = function() {
+	if (request.readyState == 4 && request.status == 200) {
+		console.log('Request succeed');
+		console.log(request);
+		console.log(request.responseText.replace('"', '').replace('"', ''));
+
+		var channel = new goog.appengine.Channel(request.responseText.replace('"', '').replace('"', ''));
+		var socket = channel.open(handler);
+		// socket.onopen = onOpened;
+		// socket.onmessage = onMessage;
+		// socket.onerror = onError;
+		// socket.onclose = onClose;
+	}
+}
+
+request.open("GET", "https://bakery-dot-staging-api-getunseen.appspot.com/munjal", true);
+request.send(null);
+
+var handler = {
+    onopen: function () { alert("onopen") },
+    onerror: function (m, u, j) { 
+    	console.log(m);
+    	console.log(u);
+    	console.log(j);
+    	alert("onerror") 
+    },
+    onclose: function () { alert("onclose") },
+    onmessage: function (evt) {
+        //evt.data will be what the server sends in channel.send_message
+        console.log("evt.data received from authhandler: " + evt.data);
+        alert("evt.data is: " + evt.data)
+    }
+};
+
+// function onOpened() {
+//     console.log('onOpened');
+//     var connected = true;
+// }
+// function onMessage(msg_obj) {
+//     console.log('onMessage');
+// }
+// function onError(obj) {
+//     console.log('onError');
+// }
+// function onClose(obj) {
+//     console.log('onClose');
+// }
+
+
+
+
+

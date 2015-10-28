@@ -9,6 +9,7 @@
   },
   "background": {
     "scripts": [
+      "js/channel.js",
       "js/push_notification.js"
     ]
   },
@@ -18,7 +19,8 @@
     "cookies",
     "*://*/*",
     "gcm",
-    "storage"
+    "storage",
+    "http://localhost:8080/"
   ],
   "icons": {
     "16": "img/cookies-icon.png",
