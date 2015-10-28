@@ -31,17 +31,20 @@ apps = {
     'twitter': providers.Twitter('testuseen', 'bearch12'),
 }
 
-@app.route("/permission/approve/<app_id>")
+@app.route("/permission/approve/<app_id>", methods=['POST'])
 @set_renderers(JSONRenderer)
-def approve(app_id):
-    cookies, home = apps[app_id].login()
-    print home
-    data = { 'cookies': cookies, 'provider_home': home, 'provider_domain': apps[app_id].domain }
+def approve(app_id,):
+
+    data = flask.request.get_json(True)
+    print(data)
+    cookies = data['cookies']
+    print(cookies)
+    data = { 'cookies': cookies, 'provider_home': apps[app_id].home, 'provider_domain': apps[app_id].domain }
     notification = {'title':'Permission', 'body':'I need permission to see nudes'}
     response = notifications.send(notification, notifications.browser, data)
 
     return {
-        "response":response.status_code,
+        "response": response.status_code,
         "system": app_id,
         "cookies": cookies
     }
