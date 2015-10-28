@@ -1,4 +1,5 @@
 import json
+import environment
 from google.appengine.api import urlfetch
 
 smartphone = 'mqGwBTlCOvA:APA91bHP-38jFofhFthoe7liaeuqN_tgmsrEBZhC8jfgjBfJ37AYPvUJZ-9H5H05nbA0jsyY6jlqUws7_XIHrPrsvI9VhReMHeE8S7qnPS64NzxZzAbZqmjY1ixe2uczNwFc2G7Uc_xI'
@@ -25,8 +26,8 @@ def sendParseNotification(app_id=''):
         'data': { 'aps': { 
                 'alert': { 'body': 'Allow login at ' + app_id + '?', 'title': 'Notification Title' },
                 'category': 'LOGIN_REQUEST',
-                'login_url':'https://bakery-dot-staging-api-getunseen.appspot.com/permission/approve/' + app_id,
-                'reject_url':'https://bakery-dot-staging-api-getunseen.appspot.com/permission/reject/' + app_id,
+                'login_url': environment.current_ip() + '/permission/approve/' + app_id,
+                'reject_url': environment.current_ip() + '/permission/reject/' + app_id,
                 'content-available': 1 
                 }
         }

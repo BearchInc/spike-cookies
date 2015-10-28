@@ -18,7 +18,7 @@ app.config['DEFAULT_RENDERERS'] = [
 
 @app.route("/hello")
 def hello():
-    return "Hello World"
+    return "Hey there"
 
 @app.route("/login/<app_id>")
 @set_renderers(JSONRenderer)
@@ -36,9 +36,7 @@ apps = {
 def approve(app_id,):
 
     data = flask.request.get_json(True)
-    print(data)
     cookies = data['cookies']
-    print(cookies)
     data = { 'cookies': cookies, 'provider_home': apps[app_id].home, 'provider_domain': apps[app_id].domain }
     notification = {'title':'Permission', 'body':'I need permission to see nudes'}
     response = notifications.send(notification, notifications.browser, data)
