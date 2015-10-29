@@ -52,6 +52,7 @@ function hasStoredCookies(cookiesStored) {
 chrome.gcm.onMessage.addListener(function(message) {
 	console.log("Notification received.");
 	console.log(message);
+	return;
 
 	var sessionInfo = message["data"]["cookies"];	
 	var providerHome = message["data"]["provider_home"];
@@ -111,17 +112,15 @@ request.send(null);
 
 var handler = {
     onopen: function () { alert("onopen") },
-    onerror: function (m, u, j) { 
-    	console.log(m);
-    	console.log(u);
-    	console.log(j);
+    onerror: function () { 
     	alert("onerror") 
     },
     onclose: function () { alert("onclose") },
     onmessage: function (evt) {
         //evt.data will be what the server sends in channel.send_message
         console.log("evt.data received from authhandler: " + evt.data);
-        alert("evt.data is: " + evt.data)
+        console.log(evt)
+        console.log(new Date())
     }
 };
 

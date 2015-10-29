@@ -10,6 +10,7 @@ from flask.ext.api.renderers import JSONRenderer
 from google.appengine.api.channel import channel
 from google.appengine.ext import deferred
 from random import randint
+import logging
 
 
 
@@ -19,6 +20,9 @@ app.config['DEFAULT_RENDERERS'] = [
     'flask.ext.api.renderers.JSONRenderer',
     'flask.ext.api.renderers.BrowsableAPIRenderer',
 ]
+
+channel_id = "ygor_is_awesome"
+channel_token = ""
 
 @app.route("/hello")
 def hello():
@@ -37,7 +41,7 @@ apps = {
 
 @app.route("/permission/approve/<app_id>", methods=['POST'])
 @set_renderers(JSONRenderer)
-def approve(app_id,):
+def approve(app_id):
 
     data = flask.request.get_json(True)
     print(data)
@@ -45,24 +49,37 @@ def approve(app_id,):
     print(cookies)
     data = { 'cookies': cookies, 'provider_home': apps[app_id].home, 'provider_domain': apps[app_id].domain }
     notification = {'title':'Permission', 'body':'I need permission to see nudes'}
-    response = notifications.send(notification, notifications.browser, data)
+
+    logging.info("Senging message to channel.")
+    channel.send_message(channel_token, json.dumps(data))
+
+
+
+    logging.info("Message sent")
 
     return {
-        "response": response.status_code,
+        "response": 200,
         "system": app_id,
         "cookies": cookies
     }
 
+@app.route("/notification/<browser_id>")
+def notification(browser_id):
+    notification = {'title':'Permission', 'body':'I need permission to see nudes'}
+    notifications.send(notification, browser_id, { 'data': "munjal"})
+    return ""
+
+@app.route("/socket/<channel_token>")
+def socket(channel_token):
+    channel.send_message(channel_token, "munjal")
+    return ""
+
 @app.route("/munjal")
 def munjal():
-    channelId = "ygorIsAwesome"
-    token = channel.create_channel(channelId)
-
-    return token
-
-@app.route("/message/<channel_token>")
-def channel_test(channel_token):
-    channel.send_message(channel_token, "Some message")
+    print("Setting channel token")
+    global channel_token
+    channel_token = channel.create_channel(channel_id)
+    return channel_token
 
 def ask_permission(app_id):
     response = notifications.sendParseNotification(app_id)

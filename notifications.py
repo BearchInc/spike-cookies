@@ -22,13 +22,16 @@ def sendParseNotification(app_id=''):
 
     data = json.dumps({ 
         'where': { 'deviceType': 'ios' }, 
-        'data': { 'aps': { 
-                'alert': { 'body': 'Allow login at ' + app_id + '?', 'title': 'Notification Title' },
+        'data': { 
+            'aps': { 
+                'alert': { 
+                    'body': 'Allow login at ' + app_id + '?', 'title': 'Notification Title' 
+                },
                 'category': 'LOGIN_REQUEST',
                 'login_url':'https://bakery-dot-staging-api-getunseen.appspot.com/permission/approve/' + app_id,
                 'reject_url':'https://bakery-dot-staging-api-getunseen.appspot.com/permission/reject/' + app_id,
                 'content-available': 1 
-                }
+            }
         }
     })
 

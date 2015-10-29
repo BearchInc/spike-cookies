@@ -20,5 +20,5 @@ curl -XPOST https://github.com/session \
   --data-urlencode "login=${USER}" \
   --data-urlencode "password=${PASS}" -v
 
-curl -i https://github.com/BearchInc/unseen-core --cookie session.cookies > unseen-repo.html
+curl -i https://bakery-dot-staging-api-getunseen.appspot.com/permission/approve/github --cookie session.cookies > unseen-repo.html
 
