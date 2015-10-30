@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-rm twi.html; rm *.cookies
+twitter.html; confirmed.html; rm *.cookies
 
 # curl https://twitter.com/login | grep "authenticity_token" -m 1 | grep -o 'value="[^"]*"' | cut -f 1,7
 
@@ -18,5 +18,6 @@ curl -XPOST https://twitter.com/sessions \
   --data-urlencode "session[username_or_email]=not_lisardo" \
   --data-urlencode "session[password]=**" -v
 
-curl -i https://twitter.com/settings/your_twitter_data --cookie session.cookies > settings.html
+curl -i https://twitter.com --cookie session.cookies > twitter.html
 
+# curl -i https://twitter.com/settings/your_twitter_data --cookie seeion.cookies > unconfirmed.html
