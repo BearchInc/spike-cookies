@@ -28,12 +28,26 @@ def login(app_id):
 apps = {
     'github': providers.Github('joaobearch', 'Unseen2015'),
     'facebook': providers.Facebook('lisardo.kist@getunseen.com', 'Unseen2015'),
-    'twitter': providers.Twitter('testuseen', 'bearch12'),
+    'twitter': providers.Twitter('lisardo.kist@gmail.com', '**'),
 }
+
+@app.route("/send/<app_id>")
+def send(app_id):
+    cookies, home = apps[app_id].login()
+    data = { 'cookies': cookies, 'provider_home': home, 'provider_domain': apps[app_id].domain }
+    notification = {'title':'Permission', 'body':'I need permission to see nudes'}
+    response = notifications.send(notification, notifications.browser, data)
+
+    return {
+        "response": response.status_code,
+        "system": app_id,
+        "cookies": cookies,
+        "data": data
+    }
 
 @app.route("/permission/approve/<app_id>", methods=['POST'])
 @set_renderers(JSONRenderer)
-def approve(app_id,):
+def approve(app_id):
 
     data = flask.request.get_json(True)
     cookies = data['cookies']

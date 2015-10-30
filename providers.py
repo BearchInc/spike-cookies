@@ -15,7 +15,7 @@ class Github:
 
     def login(self):
         result = urlfetch.fetch(Github.loginURL)
-        loginSetCookiesHeader = result.headers['Set-Cookie']
+        loginSetCookie= result.headers['Set-Cookie']
         doc = BeautifulSoup(result.content, "html.parser")
         token = doc.find('input', {'name': 'authenticity_token'}).attrs['value']
         print(token)
@@ -25,12 +25,16 @@ class Github:
                 payload=data,
                 method=urlfetch.POST,
                 follow_redirects=False,
-                headers={ 'Cookie': loginSetCookiesHeader })
+                headers={ 'Cookie': loginSetCookie})
 
-        return readCookies(result.headers['Set-Cookie']), self.home
+        sessionSetCookie = result.headers['Set-Cookie']
+        print sessionSetCookie
+
+        return readCookies(sessionSetCookie), self.home
 
 class Facebook:
     domain = '.facebook.com'
+    home = 'https://www.facebook.com'
     loginURL = 'https://www.facebook.com/login.php?login_attempt=1&lwv=110'
     
     def __init__(self, user, password):
@@ -51,7 +55,7 @@ class Facebook:
 class Twitter:
     home = 'https://twitter.com'
     domain = '.twitter.com'
-    loginURL = 'https://twitter.com'
+    loginURL = 'https://twitter.com/login'
     sessionURL = 'https://twitter.com/sessions'
 
     def __init__(self, user, password):
@@ -59,19 +63,47 @@ class Twitter:
         self.password = password
 
     def login(self):
-            result = urlfetch.fetch(Twitter.loginURL)
-            loginSetCookiesHeader = result.headers['Set-Cookie']
+            result = urlfetch.fetch(Twitter.loginURL, headers= { "User-agent":"" })
+            loginSetCookie = result.headers['Set-Cookie']
+
+            print ""
+            print ""
+            print("Login cookies: " + loginSetCookie)
+
+            print ""
+            print ""
+            print result.headers
+
             doc = BeautifulSoup(result.content, "html.parser")
             token = doc.find('input', {'name': 'authenticity_token'}).attrs['value']
 
-            data = urllib.urlencode({'authenticity_token': token, 'session[username_or_email]': self.user, 'session[password]': self.password})
+            print ""
+            print ""
+            print(token)
+
+            data = urllib.urlencode({'session[username_or_email]': self.user, 'session[password]': self.password, 'authenticity_token': token, "redirect_after_login":"/" })
+
+            print ""
+            print ""
+            print data
+
             result = urlfetch.fetch(url=Twitter.sessionURL, 
                     payload=data, 
                     method=urlfetch.POST, 
                     follow_redirects=False, 
-                    headers={ 'Cookie': loginSetCookiesHeader})
+                    headers={ 'Cookie': loginSetCookie, "Content-type": "application/x-www-form-urlencoded" })
 
-            return readCookies(result.headers['Set-Cookie']), self.home
+            sessionSetCookie = result.headers['Set-Cookie']
+
+            print ""
+            print ""
+            print("Session cookies:" + sessionSetCookie)
+
+            print ""
+            print ""
+            print result.headers
+
+            return readCookies(loginSetCookie), result.headers['location']
 
 
 def readCookies(str):
